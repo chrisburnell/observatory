@@ -1,65 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="A JavaScript Class to simplify managing Mutation Observers." />
 		<title>Observatory Demo</title>
 		<meta name="color-scheme" content="light dark">
+		<script>document.documentElement.classList.remove("no-js");</script>
+		<style>
+			.no-js .requires-js {
+				display: none;
+			}
+		</style>
 	</head>
 	<body>
 		<h1><code>Observatory</code></h1>
 
-		<p>Check out the console to see how <em>Observatory</em> responds to mutations!</p>
+		<noscript>
+			<p>This page requires JavaScript to demonstrate <em>Observatory</em> correctly.</p>
+		</noscript>
 
-		<div id="demo"></div>
+		<p class="requires-js">Open your browser console to see how <em>Observatory</em> responds to mutations!</p>
+
+		<div id="demo-a" class="requires-js">
+			<h2>Demo A</h2>
+		</div>
+
+		<div id="demo-b" class="requires-js">
+			<h2>Demo B</h2>
+		</div>
 
 		<script type="module">
 			import Observatory from "./observatory.js";
 
-			const demoElement = document.getElementById("demo");
-			const initialP = document.createElement("p");
+			const count = 3;
 
-			const a = new Observatory({
-				element: demoElement,
-				onStart: (eits) => {
-					console.log("Observatory (${new Date().toLocaleTimeString()}): Started observing", eits.element);
-					initialP.innerText = `This was injected into the page when the observer started observing at ${new Date().toLocaleTimeString()}`;
-					demoElement.appendChild(initialP);
-				},
-				onMutation: (records, observer) => {
-					for (const record of records) {
-						for (const addedNode of record.addedNodes) {
-							console.log(`Observatory (${new Date().toLocaleTimeString()}): Added`, addedNode.textContent);
-						}
-						for (const removedNode of record.removedNodes) {
-							console.log(`Observatory (${new Date().toLocaleTimeString()}): Removed`, removedNode.textContent);
-						}
-					}
-				},
-				startImmediately: true,
-			});
+			const doDemoA = (selector) => {
+				const element = document.querySelector(selector);
+				const initialP = document.createElement("p");
 
-			const count = 5;
+				const watcher = new Observatory({
+					element: element,
+					onStart: (eits) => {
+						console.log(`Observatory (${new Date().toLocaleTimeString()}): Started observing`, eits.element, `for`, eits.options);
+						initialP.innerHTML = `This was injected into the page when the observer started observing <code>${selector}</code> at ${new Date().toLocaleTimeString()}`;
+						element.appendChild(initialP);
+					},
+					onMutation: (mutations, observer, eits) => {
+						mutations.forEach((mutation) => {
+							mutation.removedNodes.forEach((removedNode) => {
+								console.log(`Observatory (${new Date().toLocaleTimeString()}): Removed`, removedNode.textContent, `in`, eits.element);
+							});
+							mutation.addedNodes.forEach((addedNode) => {
+								console.log(`Observatory (${new Date().toLocaleTimeString()}): Added`, addedNode.textContent, `in`, eits.element);
+							});
+						});
+					},
+					startImmediately: true,
+				});
 
-			[...Array(count)].forEach((_, i) => {
-				const p = document.createElement("p");
+				[...Array(count)].forEach((_, i) => {
+					const p = document.createElement("p");
 
-				const s = setTimeout(() => {
-					p.innerText = `This was injected into the page at ${new Date().toLocaleTimeString()}`;
-					demoElement.appendChild(p);
-					clearTimeout(s);
-				}, 1000 + (i * 1000));
+					const s = setTimeout(() => {
+						p.innerHTML = `This was injected into the page at ${new Date().toLocaleTimeString()}`;
+						element.appendChild(p);
+						clearTimeout(s);
+					}, 1000 + (i * 1000));
 
-				const t = setTimeout(() => {
-					p.remove();
-					clearTimeout(t);
-				}, 1000 + (count * 1000) + ((count - i - 1) * 1000));
+					const t = setTimeout(() => {
+						p.remove();
+						clearTimeout(t);
+					}, 1000 + (count * 1000) + ((count - i - 1) * 1000));
+				});
 
 				const u = setTimeout(() => {
-					initialP.remove();
-				}, 1000 + (count * 1000) + (count * 1000))
-			})
+					initialP.innerHTML = `This text was modified at ${new Date().toLocaleTimeString()}`;
+					clearTimeout(u);
+				}, 1000 + (count * 1000) + (count * 1000));
+
+				const v = setTimeout(() => {
+					console.log(element, watcher);
+					clearTimeout(v);
+				}, 1000 + (count * 1000) + (count * 1000) + 1000);
+			};
+
+			const doDemoB = (selector) => {
+				const element = document.querySelector(selector);
+				const initialP = document.createElement("p");
+
+				const watcher = new Observatory({
+					element: element,
+					onStart: (eits) => {
+						console.log(`Observatory (${new Date().toLocaleTimeString()}): Started observing`, eits.element, `for`, eits.options);
+						initialP.innerHTML = `This was injected into the page when the observer started observing <code>${selector}</code> at ${new Date().toLocaleTimeString()}`;
+						element.appendChild(initialP);
+					},
+					onMutation: (mutations, observer, eits) => {
+						mutations.forEach((mutation) => {
+							console.log(`Observatory (${new Date().toLocaleTimeString()}): Changed`, mutation.attributeName, `in`, eits.element);
+						});
+					},
+					options: {
+						attributes: true,
+					},
+					useDefaultOptions: false,
+					startImmediately: true,
+				});
+
+				const v = setTimeout(() => {
+					element.dataset.test = true;
+					clearTimeout(v);
+				}, 1500);
+
+				const w = setTimeout(() => {
+					watcher.disconnect();
+					console.log(element, watcher);
+					clearTimeout(w);
+				}, 1000 + (count * 1000) + (count * 1000) + 1000 - (2250 - 100));
+			};
+
+			const x = setTimeout(() => {
+				doDemoA("#demo-a");
+				clearTimeout(x);
+			}, 1000);
+
+			const y = setTimeout(() => {
+				doDemoB("#demo-b");
+				clearTimeout(y);
+			}, 2250);
 		</script>
 	</body>
 </html>

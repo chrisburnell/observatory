@@ -13,34 +13,55 @@ describe("Observatory", () => {
 		document.body.innerHTML = "";
 	});
 
-	it("calls onStart when observation begins", () => {
-		const onStart = vi.fn();
-		const onMutation = vi.fn();
+	it("throws a TypeError if element is not an HTMLElement", () => {
+		expect(() => {
+			new Observatory({
+				element: null,
+				onMutation: vi.fn(),
+			});
+		}).toThrow(TypeError);
+	});
 
-		const observer = new Observatory({
+	it("throws a TypeError if onMutation is not a Function", () => {
+		expect(() => {
+			new Observatory({
+				element: container,
+				onMutation: null,
+			});
+		}).toThrow(TypeError);
+	});
+
+	it("calls onStart only once after observation starts", () => {
+		const onStart = vi.fn();
+
+		const watcher = new Observatory({
 			element: container,
-			onMutation,
+			onMutation: () => {},
 			onStart,
 		});
 
-		observer.observe();
+		expect(onStart).toHaveBeenCalledTimes(0);
+
+		watcher.observe();
+		watcher.disconnect();
+		watcher.observe();
+
 		expect(onStart).toHaveBeenCalledTimes(1);
 	});
 
-	it("calls onMutation when a child is added", async () => {
+	it("calls onMutation when a mutation is observed", async () => {
 		const onMutation = vi.fn();
-		const observer = new Observatory({
+		const watcher = new Observatory({
 			element: container,
 			onMutation,
 		});
 
-		observer.observe();
+		watcher.observe();
 
-		// Trigger DOM change
 		const child = document.createElement("p");
 		container.appendChild(child);
 
-		// Wait for MutationObserver callback to fire
+		// Wait for onMutation to run
 		await new Promise((resolve) => setTimeout(resolve, 0));
 
 		expect(onMutation).toHaveBeenCalledTimes(1);
@@ -49,82 +70,89 @@ describe("Observatory", () => {
 
 	it("respects useDefaultOptions = false", () => {
 		const onMutation = vi.fn();
-		const observer = new Observatory({
+		const watcher = new Observatory({
 			element: container,
 			onMutation,
 			options: { attributes: true },
 			useDefaultOptions: false,
 		});
 
-		expect(observer.options).toEqual({ attributes: true });
+		expect(watcher.options).toEqual({ attributes: true });
 	});
 
-	it("merges defaultOptions when useDefaultOptions is true", () => {
+	it("merges defaultOptions when useDefaultOptions = true", () => {
 		const onMutation = vi.fn();
-		const observer = new Observatory({
+		const watcher = new Observatory({
 			element: container,
 			onMutation,
 			options: { attributes: true },
-			useDefaultOptions: true,
 		});
 
-		expect(observer.options).toEqual({
+		expect(watcher.options).toEqual({
 			childList: true,
 			subtree: true,
 			attributes: true,
 		});
 	});
 
-	it("changing options while observing restarts observer", () => {
-		const obsSpy = vi.spyOn(MutationObserver.prototype, "observe");
+	it("changing options while observing triggers observe only if values change", () => {
+		const spy = vi.spyOn(MutationObserver.prototype, "observe");
 
-		const observer = new Observatory({
+		const watcher = new Observatory({
 			element: container,
 			onMutation: () => {},
 			startImmediately: true,
 		});
 
-		observer.options = { attributes: true };
-		expect(obsSpy).toHaveBeenCalledTimes(2); // initial + after change
+		// triggers observe because value has changed
+		watcher.options = { attributes: true };
+		expect(spy).toHaveBeenCalledTimes(2);
 
-		obsSpy.mockRestore();
+		// does not trigger observe because value has not changed
+		watcher.options = { attributes: true };
+		expect(spy).toHaveBeenCalledTimes(2);
+
+		// triggers observe because value has changed
+		watcher.options = { childList: true };
+		expect(spy).toHaveBeenCalledTimes(3);
+
+		spy.mockRestore();
 	});
 
-	it("changing useDefaultOptions while observing restarts observer", () => {
-		const obsSpy = vi.spyOn(MutationObserver.prototype, "observe");
+	it("changing useDefaultOptions while observing triggers observe only if values change", () => {
+		const spy = vi.spyOn(MutationObserver.prototype, "observe");
 
-		const observer = new Observatory({
+		const watcher = new Observatory({
 			element: container,
 			onMutation: () => {},
-			options: {
-				childList: true,
-			},
 			startImmediately: true,
+			options: { attributes: true },
 		});
 
-		observer.useDefaultOptions = false;
-		expect(obsSpy).toHaveBeenCalledTimes(2); // initial + after change
+		// triggers observe because value has changed
+		watcher.useDefaultOptions = false;
+		expect(spy).toHaveBeenCalledTimes(2);
 
-		obsSpy.mockRestore();
+		// does not trigger observe because value has not changed
+		watcher.useDefaultOptions = false;
+		expect(spy).toHaveBeenCalledTimes(2);
+
+		// triggers observe because value has changed
+		watcher.useDefaultOptions = true;
+		expect(spy).toHaveBeenCalledTimes(3);
+
+		spy.mockRestore();
 	});
 
 	it("takeRecords returns an array", () => {
-		const observer = new Observatory({
+		const watcher = new Observatory({
 			element: container,
 			onMutation: () => {},
 		});
 
-		observer.observe();
-		const records = observer.takeRecords();
-		expect(Array.isArray(records)).toBe(true);
-	});
+		watcher.observe();
 
-	it("throws if element is not an HTMLElement", () => {
-		expect(() => {
-			new Observatory({
-				element: null,
-				onMutation: vi.fn(),
-			});
-		}).toThrow(TypeError);
+		const records = watcher.takeRecords();
+		expect(Array.isArray(records)).toBe(true);
 	});
 });
