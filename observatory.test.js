@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import EyeInTheSky from "./EyeInTheSky.js";
+import Observatory from "./observatory.js";
 
-describe("EyeInTheSky", () => {
+describe("Observatory", () => {
 	let container;
 
 	beforeEach(() => {
@@ -17,7 +17,7 @@ describe("EyeInTheSky", () => {
 		const onStart = vi.fn();
 		const onMutation = vi.fn();
 
-		const observer = new EyeInTheSky({
+		const observer = new Observatory({
 			element: container,
 			onMutation,
 			onStart,
@@ -29,7 +29,7 @@ describe("EyeInTheSky", () => {
 
 	it("calls onMutation when a child is added", async () => {
 		const onMutation = vi.fn();
-		const observer = new EyeInTheSky({
+		const observer = new Observatory({
 			element: container,
 			onMutation,
 		});
@@ -49,7 +49,7 @@ describe("EyeInTheSky", () => {
 
 	it("respects useDefaultOptions = false", () => {
 		const onMutation = vi.fn();
-		const observer = new EyeInTheSky({
+		const observer = new Observatory({
 			element: container,
 			onMutation,
 			options: { attributes: true },
@@ -61,7 +61,7 @@ describe("EyeInTheSky", () => {
 
 	it("merges defaultOptions when useDefaultOptions is true", () => {
 		const onMutation = vi.fn();
-		const observer = new EyeInTheSky({
+		const observer = new Observatory({
 			element: container,
 			onMutation,
 			options: { attributes: true },
@@ -78,7 +78,7 @@ describe("EyeInTheSky", () => {
 	it("changing options while observing restarts observer", () => {
 		const obsSpy = vi.spyOn(MutationObserver.prototype, "observe");
 
-		const observer = new EyeInTheSky({
+		const observer = new Observatory({
 			element: container,
 			onMutation: () => {},
 			startImmediately: true,
@@ -93,7 +93,7 @@ describe("EyeInTheSky", () => {
 	it("changing useDefaultOptions while observing restarts observer", () => {
 		const obsSpy = vi.spyOn(MutationObserver.prototype, "observe");
 
-		const observer = new EyeInTheSky({
+		const observer = new Observatory({
 			element: container,
 			onMutation: () => {},
 			options: {
@@ -109,7 +109,7 @@ describe("EyeInTheSky", () => {
 	});
 
 	it("takeRecords returns an array", () => {
-		const observer = new EyeInTheSky({
+		const observer = new Observatory({
 			element: container,
 			onMutation: () => {},
 		});
@@ -121,7 +121,7 @@ describe("EyeInTheSky", () => {
 
 	it("throws if element is not an HTMLElement", () => {
 		expect(() => {
-			new EyeInTheSky({
+			new Observatory({
 				element: null,
 				onMutation: vi.fn(),
 			});

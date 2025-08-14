@@ -1,7 +1,7 @@
-# Eye in the Sky
+# Observatory
 
 A JavaScript Class to simplify managing Mutation Observers.
 
-**[Demo](https://chrisburnell.github.io/EyeInTheSky/demo.html)** | **[Further reading](https://chrisburnell.com/EyeInTheSky/)**
+**[Demo](https://chrisburnell.github.io/observatory/demo.html)** | **[Further reading](https://chrisburnell.com/observatory/)**
 
 ## TODO Continue here

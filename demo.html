@@ -4,20 +4,60 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="A JavaScript Class to simplify managing Mutation Observers." />
-		<title>EyeInTheSky Demo</title>
+		<title>Observatory Demo</title>
 		<meta name="color-scheme" content="light dark">
 	</head>
 	<body>
-		<h1><code>EyeInTheSky</code></h1>
+		<h1><code>Observatory</code></h1>
+
+		<div id="demo"></div>
 
 		<script type="module">
-			import EyeInTheSky from "./EyeInTheSky.js";
-			const a = new EyeInTheSky({
-				element: document.body,
-				onMutation: () => {},
+			import Observatory from "./observatory.js";
+
+			const demoElement = document.getElementById("demo");
+			const initialP = document.createElement("p");
+
+			const a = new Observatory({
+				element: demoElement,
+				onStart: (eits) => {
+					console.log("Observatory (${new Date().toLocaleTimeString()}): Started observing", eits.element);
+					initialP.innerText = `I was injected into the page when the observer started observing at ${new Date().toLocaleTimeString()}!`;
+					demoElement.appendChild(initialP);
+				},
+				onMutation: (records, observer) => {
+					for (const record of records) {
+						for (const addedNode of record.addedNodes) {
+							console.log(`Observatory (${new Date().toLocaleTimeString()}): Added`, addedNode.textContent);
+						}
+						for (const removedNode of record.removedNodes) {
+							console.log(`Observatory (${new Date().toLocaleTimeString()}): Removed`, removedNode.textContent);
+						}
+					}
+				},
+				startImmediately: true,
 			});
-			console.log(a);
-			// TODO Continue here
+
+			const count = 5;
+
+			[...Array(count)].forEach((_, i) => {
+				const p = document.createElement("p");
+
+				const s = setTimeout(() => {
+					p.innerText = `I was injected into the page at ${new Date().toLocaleTimeString()}!`;
+					demoElement.appendChild(p);
+					clearTimeout(s);
+				}, 1000 + (i * 1000));
+
+				const t = setTimeout(() => {
+					p.remove();
+					clearTimeout(t);
+				}, 1000 + (count * 1000) + ((count - i - 1) * 1000));
+
+				const u = setTimeout(() => {
+					initialP.remove();
+				}, 1000 + (count * 1000) + (count * 1000))
+			})
 		</script>
 	</body>
 </html>

@@ -1,16 +1,16 @@
 /**
- * @typedef {object} EyeInTheSkyConfig
+ * @typedef {object} ObservatoryConfig
  * @property {HTMLElement} element
- * @property {(mutations: MutationRecord[], observer: MutationObserver, instance: EyeInTheSky) => void} onMutation
- * @property {() => void} [onStart]
+ * @property {(mutations: MutationRecord[], observer: MutationObserver, instance: Observatory) => void} onMutation
+ * @property {(instance: Observatory) => void} [onStart]
  * @property {object} [options]
  * @property {boolean} [useDefaultOptions]
  * @property {boolean} [startImmediately]
  */
-export default class EyeInTheSky {
+export default class Observatory {
 	/**
 	 * @class
-	 * @param {EyeInTheSkyConfig} config
+	 * @param {ObservatoryConfig} config
 	 */
 	constructor({
 		element,
@@ -22,21 +22,21 @@ export default class EyeInTheSky {
 	} = {}) {
 		if (!(element instanceof HTMLElement)) {
 			throw new TypeError(
-				"EyeInTheSky: `element` must be an HTMLElement.",
+				"Observatory: `element` must be an HTMLElement.",
 			);
 		}
 
 		if (!(onMutation instanceof Function)) {
 			throw new TypeError(
-				"EyeInTheSky: `onMutation` must be a Function.",
+				"Observatory: `onMutation` must be a Function.",
 			);
 		}
 
 		/** @type {HTMLElement} **/
 		this.element = element;
-		/** @type {(mutations: MutationRecord[], observer: MutationObserver, instance: EyeInTheSky) => void} **/
+		/** @type {(mutations: MutationRecord[], observer: MutationObserver, instance: Observatory) => void} **/
 		this.onMutation = onMutation;
-		/** @type {() => void} **/
+		/** @type {(instance: Observatory) => void} **/
 		this.onStart = onStart;
 		/** @type {boolean} **/
 		this.startImmediately = startImmediately;
@@ -72,7 +72,7 @@ export default class EyeInTheSky {
 			return this._options;
 		}
 		return {
-			...EyeInTheSky.defaultOptions,
+			...Observatory.defaultOptions,
 			...this._options,
 		};
 	}
@@ -110,7 +110,7 @@ export default class EyeInTheSky {
 	observe() {
 		if (!this.hasStarted) {
 			this.hasStarted = true;
-			this.onStart();
+			this.onStart(this);
 		}
 		this.disconnect();
 		this.observer = new MutationObserver((mutations, observer) => {

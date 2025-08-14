@@ -1,15 +1,15 @@
 {
-  "name": "@chrisburnell/EyeInTheSky",
+  "name": "@chrisburnell/observatory",
   "version": "1.0.0",
   "description": "A JavaScript Class to simplify managing Mutation Observers.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chrisburnell/EyeInTheSky.git"
+    "url": "git+https://github.com/chrisburnell/observatory.git"
   },
-  "homepage": "https://github.com/chrisburnell/EyeInTheSky#readme",
+  "homepage": "https://github.com/chrisburnell/observatory#readme",
   "bugs": {
-    "url": "https://github.com/chrisburnell/EyeInTheSky/issues"
+    "url": "https://github.com/chrisburnell/observatory/issues"
   },
   "author": {
     "name": "Chris Burnell",
@@ -37,7 +37,7 @@
     "access": "public",
     "provenance": true
   },
-  "main": "EyeInTheSky.js",
+  "main": "observatory.js",
   "scripts": {
     "start": "npx http-server .",
     "test": "npx vitest run"

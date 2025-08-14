@@ -4,6 +4,6 @@
 .editorconfig
 .prettierrc
 .prettierignore
-EyeInTheSky.test.js
+observatory.test.js
 demo.html
 vitest.config.js
