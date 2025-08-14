@@ -1,4 +1,12 @@
 {
 	"tabWidth": 4,
-	"trailingComma": "all"
+	"trailingComma": "all",
+	"overrides": [
+		{
+			"files": "*.{json,svg,yaml,yml}",
+			"options": {
+				"tabWidth": 2
+			}
+		}
+	]
 }
