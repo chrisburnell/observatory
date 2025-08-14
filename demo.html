@@ -10,6 +10,8 @@
 	<body>
 		<h1><code>Observatory</code></h1>
 
+		<p>Check out the console to see how <em>Observatory</em> responds to mutations!</p>
+
 		<div id="demo"></div>
 
 		<script type="module">
@@ -22,7 +24,7 @@
 				element: demoElement,
 				onStart: (eits) => {
 					console.log("Observatory (${new Date().toLocaleTimeString()}): Started observing", eits.element);
-					initialP.innerText = `I was injected into the page when the observer started observing at ${new Date().toLocaleTimeString()}!`;
+					initialP.innerText = `This was injected into the page when the observer started observing at ${new Date().toLocaleTimeString()}`;
 					demoElement.appendChild(initialP);
 				},
 				onMutation: (records, observer) => {
@@ -44,7 +46,7 @@
 				const p = document.createElement("p");
 
 				const s = setTimeout(() => {
-					p.innerText = `I was injected into the page at ${new Date().toLocaleTimeString()}!`;
+					p.innerText = `This was injected into the page at ${new Date().toLocaleTimeString()}`;
 					demoElement.appendChild(p);
 					clearTimeout(s);
 				}, 1000 + (i * 1000));
