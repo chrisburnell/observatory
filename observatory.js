@@ -65,6 +65,16 @@ export default class Observatory {
 	};
 
 	/**
+	 * @param {object} value
+	 * @returns {string}
+	 */
+	normalizeOptions(value) {
+		return value && typeof value === "object"
+			? JSON.stringify(value, Object.keys(value).sort())
+			: JSON.stringify(value);
+	}
+
+	/**
 	 * @type {object}
 	 */
 	get options() {
@@ -81,6 +91,13 @@ export default class Observatory {
 	 * @returns {void}
 	 */
 	set options(value) {
+		if (
+			this._options &&
+			this.normalizeOptions(this._options) ===
+				this.normalizeOptions(value)
+		) {
+			return;
+		}
 		this._options = value;
 		if (this.isObserving) {
 			this.observe();
@@ -98,6 +115,9 @@ export default class Observatory {
 	 * @returns {void}
 	 */
 	set useDefaultOptions(value) {
+		if (this._useDefaultOptions === Boolean(value)) {
+			return;
+		}
 		this._useDefaultOptions = Boolean(value);
 		if (this.isObserving) {
 			this.observe();
