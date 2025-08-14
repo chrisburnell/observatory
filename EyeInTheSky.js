@@ -19,10 +19,16 @@ export default class EyeInTheSky {
 		useDefaultOptions = true,
 		options = {},
 		startImmediately = false,
-	}) {
+	} = {}) {
 		if (!(element instanceof HTMLElement)) {
 			throw new TypeError(
-				"EyeInTheSky: `element` must be an HTMLElement",
+				"EyeInTheSky: `element` must be an HTMLElement.",
+			);
+		}
+
+		if (!(onMutation instanceof Function)) {
+			throw new TypeError(
+				"EyeInTheSky: `onMutation` must be a Function.",
 			);
 		}
 
