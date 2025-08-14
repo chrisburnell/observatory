@@ -63,34 +63,34 @@ console.log(records);
     </thead>
     <tbody>
         <tr>
-            <th>`element`</th>
-            <td>`HTMLElement`</td>
-            <td>The DOM element you want to observe (required).</td>
+            <th><code>element</code></th>
+            <td><code>HTMLElement</code></td>
+            <td>The DOM element you want to observe (<em>required</em>).</td>
         </tr>
         <tr>
-            <th>`onMutation`</th>
-            <td>`(mutations, observer, instance) => void`</td>
-            <td>Callback function when mutations occur (required).</td>
+            <th><code>onMutation</code></th>
+            <td><code>(mutations, observer, instance) => void</code></td>
+            <td>Callback function when mutations occur (<em>required</em>).</td>
         </tr>
         <tr>
-            <th>`onStart`</th>
-            <td>`() => void`</td>
+            <th><code>onStart</code></th>
+            <td><code>() => void</code></td>
             <td>Optional callback function when observation begins.</td>
         </tr>
         <tr>
-            <th>`options`</th>
-            <td>`object`</td>
+            <th><code>options</code></th>
+            <td><code>object</code></td>
             <td>Optional MutationObserver options.</td>
         </tr>
         <tr>
-            <th>`useDefaultOptions`</th>
-            <td>`boolean`</td>
-            <td>Merge options with default options (`childList: true, subtree: true`). Default `true`.</td>
+            <th><code>useDefaultOptions</code></th>
+            <td><code>boolean</code></td>
+            <td>Merge options with default options (<code>childList: true, subtree: true</code>). Default <code>true</code>.</td>
         </tr>
         <tr>
-            <th>`startImmediately`</th>
-            <td>`boolean`</td>
-            <td>Start observing immediately. Default `false`.</td>
+            <th><code>startImmediately</code></th>
+            <td><code>boolean</code></td>
+            <td>Start observing immediately. Default <code>false</code>.</td>
         </tr>
     </tbody>
 </table>
