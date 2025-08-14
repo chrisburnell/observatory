@@ -1,0 +1,9 @@
+.github
+.gitattributes
+.vscode
+.editorconfig
+.prettierrc
+.prettierignore
+EyeInTheSky.test.js
+demo.html
+vitest.config.js
