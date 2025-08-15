@@ -41,18 +41,18 @@
 
 				const watcher = new Observatory({
 					element: element,
-					onStart: (eits) => {
-						console.log(`Observatory (${new Date().toLocaleTimeString()}): Started observing`, eits.element, `for`, eits.options);
+					onStart: (instance) => {
+						console.log(`Observatory (${new Date().toLocaleTimeString()}): Started observing`, instance.element, `for`, instance.options);
 						initialP.innerHTML = `This was injected into the page when the observer started observing <code>${selector}</code> at ${new Date().toLocaleTimeString()}`;
 						element.appendChild(initialP);
 					},
-					onMutation: (mutations, observer, eits) => {
+					onMutation: (mutations, observer, instance) => {
 						mutations.forEach((mutation) => {
 							mutation.removedNodes.forEach((removedNode) => {
-								console.log(`Observatory (${new Date().toLocaleTimeString()}): Removed`, removedNode.textContent, `in`, eits.element);
+								console.log(`Observatory (${new Date().toLocaleTimeString()}): Removed`, removedNode.textContent, `in`, instance.element);
 							});
 							mutation.addedNodes.forEach((addedNode) => {
-								console.log(`Observatory (${new Date().toLocaleTimeString()}): Added`, addedNode.textContent, `in`, eits.element);
+								console.log(`Observatory (${new Date().toLocaleTimeString()}): Added`, addedNode.textContent, `in`, instance.element);
 							});
 						});
 					},
@@ -91,14 +91,14 @@
 
 				const watcher = new Observatory({
 					element: element,
-					onStart: (eits) => {
-						console.log(`Observatory (${new Date().toLocaleTimeString()}): Started observing`, eits.element, `for`, eits.options);
+					onStart: (instance) => {
+						console.log(`Observatory (${new Date().toLocaleTimeString()}): Started observing`, instance.element, `for`, instance.options);
 						initialP.innerHTML = `This was injected into the page when the observer started observing <code>${selector}</code> at ${new Date().toLocaleTimeString()}`;
 						element.appendChild(initialP);
 					},
-					onMutation: (mutations, observer, eits) => {
+					onMutation: (mutations, observer, instance) => {
 						mutations.forEach((mutation) => {
-							console.log(`Observatory (${new Date().toLocaleTimeString()}): Changed`, mutation.attributeName, `in`, eits.element);
+							console.log(`Observatory (${new Date().toLocaleTimeString()}): Changed`, mutation.attributeName, `in`, instance.element);
 						});
 					},
 					options: {
