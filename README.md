@@ -74,7 +74,7 @@ console.log(records);
         </tr>
         <tr>
             <th><code>onStart</code></th>
-            <td><code>() => void</code></td>
+            <td><code>(instance) => void</code></td>
             <td>Optional callback function when observation begins.</td>
         </tr>
         <tr>
@@ -97,8 +97,9 @@ console.log(records);
 
 ## Properties & Methods
 
-- `observer.options`
-- `observer.useDefaultOptions`
+- `observer.defaultOptions` (*getter*)
+- `observer.options` (*getter*/*setter*)
+- `observer.useDefaultOptions` (*getter*/*setter*)
 - `observe()`
 - `disconnect()`
 - `takeRecords()`
@@ -132,3 +133,30 @@ const watcher = new Observatory({
 });
 watcher.observe();
 ```
+
+### Extend/Augment into own Class
+
+```javascript
+import Observatory from "@chrisburnell/observatory";
+
+export default class MyOwnObservatory {
+	constructor() {
+		super({
+			element: container,
+			options: {
+				characterData: true,
+				attributes: true,
+			}
+		});
+	}
+	this.mySpecialVariable;
+	this.onMutation = (mutations, observer, instance) => {
+		this.mySpecialVariable = instance.element.innerText;
+	};
+}
+```
+
+## Notes
+
+- If `options` or `useDefaultOptions` are updated while observing, *Observatory* will restart the observer automatically, so there is no need to recall `observe()`.
+- `onStart` is guaranteed to only run **once**, no matter how many times `observe()` is called.

@@ -8,6 +8,9 @@
  * @property {boolean} [startImmediately]
  */
 export default class Observatory {
+	#options;
+	#useDefaultOptions;
+
 	/**
 	 * @class
 	 * @param {ObservatoryConfig} config
@@ -42,9 +45,9 @@ export default class Observatory {
 		this.startImmediately = startImmediately;
 
 		/** @type {object} **/
-		this._options = options;
+		this.#options = options;
 		/** @type {boolean} **/
-		this._useDefaultOptions = useDefaultOptions;
+		this.#useDefaultOptions = useDefaultOptions;
 
 		/** @type {boolean} **/
 		this.hasStarted = false;
@@ -65,10 +68,18 @@ export default class Observatory {
 	};
 
 	/**
+	 * @type {object}
+	 * @readonly
+	 */
+	get defaultOptions() {
+		return Observatory.defaultOptions;
+	}
+
+	/**
 	 * @param {object} value
 	 * @returns {string}
 	 */
-	normalizeOptions(value) {
+	static normalizeOptions(value) {
 		return value && typeof value === "object"
 			? JSON.stringify(value, Object.keys(value).sort())
 			: JSON.stringify(value);
@@ -78,12 +89,12 @@ export default class Observatory {
 	 * @type {object}
 	 */
 	get options() {
-		if (!this._useDefaultOptions) {
-			return this._options;
+		if (!this.#useDefaultOptions) {
+			return this.#options;
 		}
 		return {
-			...Observatory.defaultOptions,
-			...this._options,
+			...this.defaultOptions,
+			...this.#options,
 		};
 	}
 
@@ -92,13 +103,13 @@ export default class Observatory {
 	 */
 	set options(value) {
 		if (
-			this._options &&
-			this.normalizeOptions(this._options) ===
-				this.normalizeOptions(value)
+			this.#options &&
+			Observatory.normalizeOptions(this.#options) ===
+				Observatory.normalizeOptions(value)
 		) {
 			return;
 		}
-		this._options = value;
+		this.#options = value;
 		if (this.isObserving) {
 			this.observe();
 		}
@@ -108,17 +119,17 @@ export default class Observatory {
 	 * @type {boolean}
 	 */
 	get useDefaultOptions() {
-		return this._useDefaultOptions;
+		return this.#useDefaultOptions;
 	}
 
 	/**
 	 * @returns {void}
 	 */
 	set useDefaultOptions(value) {
-		if (this._useDefaultOptions === Boolean(value)) {
+		if (this.#useDefaultOptions === Boolean(value)) {
 			return;
 		}
-		this._useDefaultOptions = Boolean(value);
+		this.#useDefaultOptions = Boolean(value);
 		if (this.isObserving) {
 			this.observe();
 		}
